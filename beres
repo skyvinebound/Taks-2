@@ -1,0 +1,120 @@
+class Player
+  attr_accessor :name,:manna,:blood
+  def initialize name
+    @manna=40
+    @blood=100
+    @name=name
+
+  end
+
+  def attack
+    @manna = @manna -10
+  end
+
+  def defend
+    @blood = @blood -20
+
+  end
+end
+
+class Main
+  @players = Hash.new
+  def self.menu
+    puts '# ============================== #
+   # Welcome to the Battle Arena #
+   # ------------------------------------------------- ---- #
+   # Description: #
+   # 1 type "new" to create a character #
+   # 2. type "start" to begin the fight #
+   # ------------------------------------------------- ---- #
+   # * Max player 2 or 3 #'
+    puts "# Current Player: #{@players.count}"
+    puts "#{Main.players_list}"
+    puts "# ------------------------------------------------#"
+
+    Main.input
+  end
+
+  def self.input
+    puts "Type your action : "
+    input_user = gets.chomp
+
+    if input_user.eql? "new"
+      new_players
+
+    elsif input_user.eql? "start"
+      Main.battle
+
+    else
+      puts "Keyword Unknownable"
+    end
+
+    Main.menu
+  end
+
+  def self.players_list
+    @players.each do |key, p|
+      puts "Nama : #{@players[key].name}"
+      puts "Blood : #{@players[key].blood}"
+      puts "Manna : #{@players[key].manna}"
+    end
+  end
+
+  def self.new_players
+    Main.check_players
+    puts "Ketik nama : "
+    input_user = gets.chomp
+    @players[input_user] = Player.new(input_user)
+
+  end
+
+  def self.check_players
+    if @players.count >= 3
+      puts "Players reach maximum"
+      Main.menu
+    end
+  end
+
+  def self.battle
+    if @players.count < 2
+      puts " Players not enough "
+      Main.new_players
+
+    elsif @players.count == 2 or 3
+      puts "attacker : "
+      attacker = gets.chomp
+      puts "deffender : "
+      defender = gets.chomp
+      if @players[attacker].nil? or @players[defender].nil?
+        puts " Player Unidentified "
+        Main.battle
+      else
+
+        @players[defender].defend
+        @players[attacker].attack
+
+        Main.players_list
+        if    @players[attacker].blood == 0
+        @players[attacker].manna == 0
+
+        elsif   @players[defender].blood == 0
+
+          puts " #------------Game Over-------------#
+                 #{@players[attacker].name} -- WIN
+                 #{@players[attacker].blood}
+                 #{@players[defender].name} -- Dead
+                 #{@players[defender].blood} "
+                 
+          Main.menu
+
+        else
+          Main.battle
+        end
+      end
+
+    end
+  end
+
+end
+
+Main.menu
